@@ -1,0 +1,1 @@
+let getLines fname = List.ofArray (System.IO.File.ReadAllLines fname)
