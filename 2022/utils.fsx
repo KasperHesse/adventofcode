@@ -1,1 +1,1 @@
-let getLines fname = List.ofArray (System.IO.File.ReadAllLines fname)
+let getLines (fname: string): string list = List.ofArray (System.IO.File.ReadAllLines (__SOURCE_DIRECTORY__ + "/" + fname))
