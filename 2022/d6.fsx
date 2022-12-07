@@ -37,6 +37,16 @@ let findFirstDistinctN inp N =
   then N
   else loop (drop inp N) buf 0 N N
 
+//100% functional approach: Not quite as fast, but doesn't use an array
+let findFirstN inp N =
+  let rec loop inp i N =
+    match inp with
+    | [] -> i
+    | _::xs -> let h = List.take N inp
+               if Set.count (set h) = N then i
+               else loop xs (i+1) N
+  loop inp N N
+
 let getStartOfPacket inp =
   findFirstDistinctN inp 4
 
