@@ -109,3 +109,46 @@ let solve2 inp =
   let candidates = (List.filter (fun d -> d >= needed) dirs)
   // (totSize, candidates, List.min candidates)
   List.min candidates
+
+
+
+//Alternative solution without using a tree structure
+//state: map<string list, int>, storing size of directory as value and path as key
+//when cd into directory, push dirname onto path
+//when cd'ing out, pop off path
+//when file, update state for ALL DIRECTORIES in current path
+//when dir, ignore it
+//path: List of directories we've above this one
+
+//Update the size of all directories on current path
+let rec updateAll path sz state =
+  let change sz = function
+    | None -> Some sz
+    | Some x -> Some (x+sz)
+
+  match path with
+  | [] -> state
+  | _::path' -> let state' = Map.change path (change sz) state
+                updateAll path' sz state'
+
+//Generate the list of sizes of all directories in the system
+let rec generateSizeList cmds state path =
+  match cmds with
+  | Cd x::cmds' when x=".." -> generateSizeList cmds' state (List.tail path)
+  | Cd x::cmds' when x="/" -> generateSizeList cmds' state ["/"]
+  | Cd x::cmds' -> generateSizeList cmds' state (x::path)
+  | Ls _::cmds' -> generateSizeList cmds' state path
+  | E (File (sz,_))::cmds' -> let state' = updateAll path sz state
+                              generateSizeList cmds' state' path
+  | E _::cmds' -> generateSizeList cmds' state path
+  | [] -> List.ofSeq (Map.values state)
+
+let solve1_v2 x =
+  let m = generateSizeList (List.map cmdToCommand x) Map.empty<string list,int> ["/"]
+  let filt = List.filter (fun v -> v <= 100_000) m
+  List.sum filt
+
+let solve2_v2 x =
+  let m = generateSizeList (List.map cmdToCommand x) Map.empty<string list,int> ["/"]
+  let needed = (List.max m) - 40_000_000
+  List.min (List.filter (fun v -> v >= needed) m)
