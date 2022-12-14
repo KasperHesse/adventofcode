@@ -62,9 +62,6 @@ let solve1 inp =
   let intMap = toIntMap inp
   List.length (scanMap intMap)
 
-
-
-
 //part 2:
 //Finding the tree with the highest viewing distance
 //Naive algorithm: O(n*m + n + m), parsing each tree at a time

@@ -1,5 +1,6 @@
 #load "utils.fsx"
 open System.Text.RegularExpressions
+open Utils
 
 let input = getLines "d5.txt"
 let test = getLines "d5test.txt"
