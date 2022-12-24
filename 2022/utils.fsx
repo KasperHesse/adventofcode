@@ -24,3 +24,6 @@ let deq = function
   | Q (eq, d::dq) -> (d, Q(eq, dq))
   | Q (d::eq, []) -> (d, Q([], List.rev eq))
 
+let qsz (Q (a,b)) = (List.length a + List.length b)
+
+let qstr (Q (a,b)) = b @ List.rev a
