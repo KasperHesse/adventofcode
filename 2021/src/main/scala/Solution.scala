@@ -1,8 +1,20 @@
 import scala.io.Source
 
+
 abstract class Solution {
 
+  implicit class ListOps[T](xs: List[T]) {
+    def allPairs(that: List[T]): List[(T,T)] = for (x <- xs; y <- that) yield (x,y)
+    def pairwise(): List[(T,T)] = xs zip xs.tail
+  }
+
+  implicit class SetOps[T](set: Set[T]) {
+    def allPairs(that: Set[T]): Set[(T,T)] = for (x <- set; y <- that) yield (x,y)
+  }
+
+
   def solvePart1(inp: List[String]): Any = {
+
     0
   }
 
@@ -53,7 +65,7 @@ object Solution extends App {
     if (part1Test == part1TestExp) {
       println(s"Solution for part 1: ${solver.solvePart1(inp)}")
     } else {
-      println(s"ERR: Bad solution for part 1 test:\nExpected: $part1TestExp\nGot: $part1Test")
+      println(s"ERR: Bad solution for part 1 test:\nExpected: $part1TestExp\nGot:      $part1Test")
     }
 
     val part2Test = solver.solvePart2(testInp)
