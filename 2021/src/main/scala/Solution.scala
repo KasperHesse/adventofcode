@@ -34,9 +34,11 @@ object Solution extends App {
   }
 
   def parseAsIntMap(inp: List[String]): Map[(Int,Int), Int] = {
-    val z = inp.zipWithIndex.flatMap{case (s,y) => s.zipWithIndex.map{case (c,x) => (c.toInt - 48, x, y)}} //converted to list of (value, x, y)
-      .foldLeft(Map.empty[(Int,Int), Int]){case (m, (v, x, y)) => m.updated((x,y), v)}
-    z
+    parseAsMap(inp).map{case (k,v) => (k, v.toInt-48)}
+  }
+
+  def parseAsMap(inp: List[String]): Map[(Int,Int), Char] = {
+    inp.zipWithIndex.flatMap{case (s,y) => s.zipWithIndex.map{case (c,x) => ((x,y),c)}}.toMap
   }
 
   def getRectMapBounds[T](V: Map[(Int,Int), T]): (Int,Int,Int,Int) = {
