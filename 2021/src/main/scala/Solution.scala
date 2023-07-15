@@ -4,6 +4,11 @@ import scala.io.Source
 abstract class Solution {
 
   implicit class ListOps[T](xs: List[T]) {
+    /**
+     * Generates all pairs of elements in the two lists
+     * @param that
+     * @return
+     */
     def allPairs(that: List[T]): List[(T,T)] = for (x <- xs; y <- that) yield (x,y)
     def pairwise(): List[(T,T)] = xs zip xs.tail
   }

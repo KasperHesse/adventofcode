@@ -12,6 +12,12 @@ class PriorityQueue[T](N: Int) {
   var n: Int = N //Number of elements currently in heap
 
   /**
+   * Number of elements currently in the priority queue
+   * @return
+   */
+  def size: Int = n
+
+  /**
    * Look at the top item of the queue, if one such exists.
    * Throws an exception if the PQ is empty
    * @return

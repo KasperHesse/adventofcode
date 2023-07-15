@@ -1,0 +1,26 @@
+,,,,,,,,,,,,,,
+1: read input,inp w,inp w,inp w,inp w,inp w,inp w,inp w,inp w,inp w,inp w,inp w,inp w,inp w,inp w
+2: reset x reg,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0,mul x 0
+3: inc x by z-value,add x z,add x z,add x z,add x z,add x z,add x z,add x z,add x z,add x z,add x z,add x z,add x z,add x z,add x z
+4: take x = x mod 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26,mod x 26
+5: div z 1 OR div z 26. div z 1 does not affect z; div z 26 can reset (maybe),div z 1,div z 1,div z 1,div z 1,div z 1,div z 26,div z 26,div z 1,div z 26,div z 1,div z 26,div z 26,div z 26,div z 26
+6: inc x if div by 1. Otherwise dec x,add x 10,add x 10,add x 14,add x 11,add x 14,add x -14,add x 0,add x 10,add x -10,add x 13,add x -12,add x -3,add x -11,add x -2
+7: set x=0 if div by 1 (always x>10). Otherwise; potentially set x=1 if x=w. May also set x=0 here ,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w,eql x w
+8: set x=1 if div by 1. Otherwise; may set x=0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0,eql x 0
+9: reset y reg,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0
+10: set y=25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25,add y 25
+11: set y=25 if div by 1. Otherwise; set y=0,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x
+12: inc y by 1. Either sets y=26 or y=1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1,add y 1
+13: either make z large (<26) or keep at old value,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y,mul z y
+14: reset y reg,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0,mul y 0
+15: set y=input value,add y w,add y w,add y w,add y w,add y w,add y w,add y w,add y w,add y w,add y w,add y w,add y w,add y w,add y w
+16: inc y by some small value,add y 2,add y 4,add y 8,add y 7,add y 12,add y 7,add y 10,add y 14,add y 2,add y 6,add y 8,add y 11,add y 5,add y 11
+17: either keep y or reset y. Depends on result of eql-operations,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x,mul y x
+18: increment value of z by y,add z y,add z y,add z y,add z y,add z y,add z y,add z y,add z y,add z y,add z y,add z y,add z y,add z y,add z y
+
+final round: must set y=0 and have z=0 when doing (18). For y=0 must have x=0 when doing (17)
+to have x=0 when doing (17) must set x=1 in (7) so it becomes 0 in (8)
+to set x=1 in (7); old value of x must be 2 greater (x'-2=x)
+should be able to follow dependence between z from first to last values
+whenever we do z/=26; does that reset dependence chain on previous values?
+separate dependence chain for instructions with (div z 26) and (div z 1)
