@@ -138,7 +138,7 @@ class Day16 extends Solution {
 }
 
 object Day16 extends App {
-  Solution.solve(new Day16, 16,
+  Solution.solve2021(new Day16, 16,
     List(16, 12, 23, 31, 14, 8, 15, 11, 13, 19, 16, 20), //first 4: Version nums from 4 examples for part 1. Last: Computed version nums for examples from part 2
     List(15, 46, 46, 54, 3, 54, 7, 9, 1, 0, 0, 1)) //first 4: Computed values for examples from part 1: Last: Given results for examples from part 2
 }

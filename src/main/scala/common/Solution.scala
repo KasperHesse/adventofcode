@@ -64,10 +64,13 @@ object Solution extends App {
     E
   }
 
+  def solve2023(solver: Solution, day: Int, part1TestExp: Any, part2TestExp: Any): Unit = {
+    solve(solver, day, 2023, part1TestExp, part2TestExp)
+  }
 
-  def solve(solver: Solution, day: Int, part1TestExp: Any, part2TestExp: Any): Unit = {
-    val inp = readInput(f"d$day")
-    val testInp = readInput(s"d${day}test")
+  def solve(solver: Solution, day: Int, year: Int, part1TestExp: Any, part2TestExp: Any): Unit = {
+    val inp = readInput(f"y$year/d$day")
+    val testInp = readInput(s"y$year/d${day}test")
 
     val part1Test = solver.solvePart1(testInp)
     if (part1Test == part1TestExp) {
@@ -82,5 +85,9 @@ object Solution extends App {
     } else {
       println(s"ERR: Bad solution for part 2 test:\n  Expected: $part2TestExp\n  Got: $part2Test")
     }
+  }
+
+  def solve2021(solver: Solution, day: Int, part1TestExp: Any, part2TestExp: Any): Unit = {
+    solve(solver, day, 2021, part1TestExp, part2TestExp)
   }
 }

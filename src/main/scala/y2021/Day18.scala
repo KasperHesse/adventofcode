@@ -162,5 +162,5 @@ class Day18 extends Solution {
 
 object Day18 extends App {
 
-  Solution.solve(new Day18, 18, 4140, 3993)
+  Solution.solve2021(new Day18, 18, 4140, 3993)
 }
