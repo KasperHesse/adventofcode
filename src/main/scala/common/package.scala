@@ -54,4 +54,22 @@ package object common {
       }
     }
   }
+
+  def leastCommonMultiple(vals: List[Long]): Long = {
+    def gcd(a: Long, b: Long): Long = (a compare b) match {
+      case x if x<0 => gcd(a, b-a)
+      case 0 => a
+      case _ => gcd(a-b, b)
+    }
+
+    vals match {
+      case x :: y :: tail => {
+        val a = x * (y / (gcd(x,y)))
+        val b = leastCommonMultiple(tail)
+        a * (b / (gcd(a,b)))
+      }
+      case x :: _ => x
+      case Nil => 1L
+    }
+  }
 }
