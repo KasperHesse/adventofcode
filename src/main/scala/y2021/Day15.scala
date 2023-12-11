@@ -8,7 +8,7 @@ class Day15 extends Solution {
     //y2021.A simple Dijkstra implementation should suffice here
     val V = Solution.parseAsIntMap(inp)
     val (minX, maxX, minY, maxY) = Solution.getRectMapBounds(V)
-    val E = Solution.getMapNeighbours(minX, maxX, minY, maxY)
+    val E = Solution.gen2DMap(minX, maxX, minY, maxY)
     val SPT = Dijkstra((minX,minY), (maxX, maxY), V, E)
     SPT.last._2
   }
@@ -39,7 +39,7 @@ class Day15 extends Solution {
     val V = maps.reduce(_++_)
     //Remaining is same as part 1
     val (minX, maxX, minY, maxY) = Solution.getRectMapBounds(V)
-    val E = Solution.getMapNeighbours(minX, maxX, minY, maxY)
+    val E = Solution.gen2DMap(minX, maxX, minY, maxY)
     val SPT = Dijkstra((minX,minY), (maxX, maxY), V, E)
     SPT.last._2
   }

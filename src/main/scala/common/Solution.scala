@@ -11,7 +11,12 @@ abstract class Solution {
      * @return
      */
     def allPairs(that: List[T]): List[(T,T)] = for (x <- xs; y <- that) yield (x,y)
-    def pairwise(): List[(T,T)] = xs zip xs.tail
+
+    /**
+     * Create a list of pairwise elements from the input list
+     * @return
+     */
+    def pairwise: List[(T,T)] = xs zip xs.tail
   }
 
   implicit class SetOps[T](set: Set[T]) {
@@ -71,15 +76,21 @@ object Solution extends App {
     (minX, maxX, minY, maxY)
   }
 
+  def withinMapBounds[T](v: (Int, Int), m: Map[(Int, Int), T]): Boolean = {
+    val (minX, maxX, minY, maxY) = getRectMapBounds(m)
+    minX <= v._1 && v._1 <= maxX && minY <= v._2 && v._2 <= maxY
+  }
+
   /**
-   * Generates a map from (x,y) to all legal neighbours of that (x,y) location in a map
-   * @param minX
-   * @param maxX
-   * @param minY
-   * @param maxY
+   * Generates a 2D-map where each (x,y) location connects to neighbouring
+   * vertices in the x and y-directions
+   * @param minX Minimum X-value of the map (inclusive)
+   * @param maxX Maximum X-value of the map (inclusive)
+   * @param minY Minimum Y-value of the map (inclusive)
+   * @param maxY Maximum Y-value of the map (inclusive)
    * @return
    */
-  def getMapNeighbours(minX: Int, maxX: Int, minY: Int, maxY: Int): Map[(Int,Int), List[(Int,Int)]] = {
+  def gen2DMap(minX: Int, maxX: Int, minY: Int, maxY: Int): Map[(Int,Int), List[(Int,Int)]] = {
     val dxy = List((-1,0), (1,0), (0,-1), (0,1)) //Possible neighbours
     val xy = Seq.tabulate(maxX+1)(x => Seq.tabulate(maxY+1)(y => (x,y))).flatten //X,Y coords to start from
     val E = xy.foldLeft(Map.empty[(Int,Int), List[(Int,Int)]]) { case (m, (x, y)) =>
