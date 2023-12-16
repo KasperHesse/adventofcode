@@ -93,6 +93,22 @@ package object common {
     }
   }
 
+  /**
+   * A class for representing points and vectors in a two-dimensional space
+   * @param x X-coordinate
+   * @param y Y-coordinate
+   */
+  case class Vec2D(x: Int, y: Int) {
+    /** Rotate the vector 90deg counter clockwise */
+    def rotLeft: Vec2D = Vec2D(-this.y, this.x)
+    /** Rotate the vector 90deg clockwise */
+    def rotRight: Vec2D = Vec2D(this.y, -this.x)
+    /** Rotate the vector 180 degrees, flipping its direction */
+    def flip: Vec2D = Vec2D(-this.x, -this.y)
+    /** Add another Vec2D to this one, obtaining the result */
+    def +(that: Vec2D): Vec2D = Vec2D(this.x + that.x, this.y + that.y)
+  }
+
   object Queue {
     def apply[T](item: T): Queue[T] = Queue(Nil, List(item))
   }

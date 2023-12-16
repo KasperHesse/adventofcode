@@ -65,14 +65,15 @@ object Solution extends App {
   }
 
   /**
-   * Get the bounds of a rectangular map, returning the min and max x,y values that can be indexed
+   * Get the bounds of a rectangular map, returning the min and max x,y values that can be indexed (inclusive)
    * @param V
    * @tparam T
    * @return (minX, maxX, minY, maxY)
    */
   def getRectMapBounds[T](V: Map[(Int,Int), T]): (Int,Int,Int,Int) = {
-    val (maxX, maxY) = (V.keys.maxBy(_._1)._1, V.keys.maxBy(_._2)._2)
-    val (minX, minY) = (V.keys.minBy(_._1)._1, V.keys.minBy(_._2)._2)
+    val keys = V.keys
+    val (maxX, maxY) = (keys.maxBy(_._1)._1, keys.maxBy(_._2)._2)
+    val (minX, minY) = (keys.minBy(_._1)._1, keys.minBy(_._2)._2)
     (minX, maxX, minY, maxY)
   }
 
