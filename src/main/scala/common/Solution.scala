@@ -127,14 +127,16 @@ object Solution extends App {
 
     val part1Test = solver.solvePart1(testInp)
     if (part1Test == part1TestExp) {
-      println(s"Solution for part 1: ${solver.solvePart1(inp)}")
+      print("Solution for part 1: ")
+      println(solver.solvePart1(inp))
     } else {
       println(s"ERR: Bad solution for part 1 test:\nExpected: $part1TestExp\nGot:      $part1Test")
     }
 
     val part2Test = solver.solvePart2(testInp)
     if (part2Test == part2TestExp) {
-      println(s"Solution for part 2: ${solver.solvePart2(inp)}")
+      print("Solution for part 2: ")
+      println(solver.solvePart2(inp))
     } else {
       println(s"ERR: Bad solution for part 2 test:\n  Expected: $part2TestExp\n  Got: $part2Test")
     }

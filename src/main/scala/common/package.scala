@@ -41,6 +41,10 @@ package object common {
     }
   }
 
+  object Range {
+    def apply(start: Long, end: Long): Range = Range(start, end, end - start + 1)
+  }
+
   /**
    * Compute the least common multiple of some values
    * @param vals
@@ -107,6 +111,8 @@ package object common {
     def flip: Vec2D = Vec2D(-this.x, -this.y)
     /** Add another Vec2D to this one, obtaining the result */
     def +(that: Vec2D): Vec2D = Vec2D(this.x + that.x, this.y + that.y)
+    /** Subract a Vec2D from this one */
+    def -(that: Vec2D): Vec2D = Vec2D(this.x - that.x, this.y - that.y)
   }
 
   object Queue {
