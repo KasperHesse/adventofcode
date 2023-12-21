@@ -84,6 +84,10 @@ package object common {
       Queue(item::enqueue, dequeue)
     }
 
+    def enqAll(items: List[T]): Queue[T] = {
+      items.foldLeft(this){case (q,i) => q.enq(i)}
+    }
+
     /**
      * Dequeue an item from the queue, if any
      * @return Tuple. First is optional dequeued item, second is queue object for remaining queue
