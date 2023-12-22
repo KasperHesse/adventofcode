@@ -93,7 +93,7 @@ object Solution extends App {
    */
   def gen2DMap(minX: Int, maxX: Int, minY: Int, maxY: Int): Map[(Int,Int), List[(Int,Int)]] = {
     val dxy = List((-1,0), (1,0), (0,-1), (0,1)) //Possible neighbours
-    val xy = Seq.tabulate(maxX+1)(x => Seq.tabulate(maxY+1)(y => (x,y))).flatten //X,Y coords to start from
+    val xy = Seq.tabulate(maxX-minX+1)(x => Seq.tabulate(maxY-minY+1)(y => (minX + x,minY + y))).flatten //X,Y coords to start from
     val E = xy.foldLeft(Map.empty[(Int,Int), List[(Int,Int)]]) { case (m, (x, y)) =>
       val nbs = dxy.map { case (dx, dy) => (x + dx, y + dy) } //Map to neighbour coords
         .filter(XY => (minX <= XY._1 && XY._1 <= maxX) && (minY <= XY._2 && XY._2 <= maxY)) //Filter for legal neighbours

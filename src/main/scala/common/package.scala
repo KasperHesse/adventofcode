@@ -106,7 +106,7 @@ package object common {
    * @param x X-coordinate
    * @param y Y-coordinate
    */
-  case class Vec2D(x: Int, y: Int) {
+  case class Vec2D(x: Long, y: Long) {
     /** Rotate the vector 90deg counter clockwise */
     def rotLeft: Vec2D = Vec2D(-this.y, this.x)
     /** Rotate the vector 90deg clockwise */
