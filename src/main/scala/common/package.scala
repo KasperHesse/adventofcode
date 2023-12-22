@@ -14,6 +14,13 @@ package object common {
     def intersects(that: Range): Boolean = (math.max(this.start, that.start) - math.min(this.end, that.end) <= 0)
 
     /**
+     * Checks if a range contain a value
+     * @param that the value to check for
+     * @return True if the value is contained, false otherwise
+     */
+    def contains(that: Long): Boolean = this.start <= that && that <= this.end
+
+    /**
      * Partitions this range into subranges by another range.
      *
      * @param that

@@ -29,8 +29,63 @@ class Day22 extends Solution {
     case s"$x1,$y1,$z1~$x2,$y2,$z2" => Cuboid(Range(x1.toLong,x2.toLong), Range(y1.toLong,y2.toLong), Range(z1.toLong,z2.toLong))
   }
 
+  /**
+   * Create a graph of the dropped cuboids. Each node in the graph points to the bricks resting on top of it
+   * @param cuboids The remaining cuboids to process
+   * @param all List of all cuboids to find the ones located above
+   * @param graph Graph being built / accumulating parameter
+   * @return Mapping (cuboid -> all cuboids resting on top of it)
+   */
+  @tailrec
+  final def createGraph(cuboids: List[Cuboid], all: List[Cuboid], graph: Map[Cuboid, List[Cuboid]]): Map[Cuboid, List[Cuboid]] = {
+    cuboids match {
+      case Nil => graph
+      case c::tail =>
+        val supporting = all.filter(c2 => c2.intersects(c.layerAbove))
+        val g2 = graph.updated(c, supporting)
+        createGraph(tail, all, g2)
+    }
+  }
+
+  /**
+   * Create a "degree graph", tracking the in-degree of each cuboid. When a cuboid's in-degree is 0, it is no
+   * longer supported by any other cuboid
+   * @param graph The graph created by [[createGraph]]
+   * @return Mapping (cuboid -> number of cuboids supporting it)
+   */
+  def createDegGraph(graph: Map[Cuboid, List[Cuboid]]): Map[Cuboid, Int] = {
+    graph.foldLeft(Map.empty[Cuboid, Int]){case (dg, (c,cs)) =>
+      cs.foldLeft(dg){case (dg, c2) => dg.updatedWith(c2){
+        case None => Some(1)
+        case Some(i) => Some(i+1)
+      }}
+    }
+  }
+
+  /**
+   * Destroy a cuboid and track which other cuboids drop as a result
+   * @param queue Queue of cuboids to consider for dropping
+   * @param dropped Number of dropped cuboids
+   * @param graph The graph mapping (cuboid -> cuboids on top of it)
+   * @param degGraph Degree graph being updated, mapping (cuboid -> number of cuboids supporting it)
+   * @return Number of cuboids dropped in this process
+   */
+  @tailrec
+  final def destroyAndDrop(queue: Queue[Cuboid], dropped: Int, graph: Map[Cuboid, List[Cuboid]], degGraph: Map[Cuboid, Int]): Int = {
+    val (c,q) = queue.deq()
+    c match {
+      case None => dropped - 1
+      case Some(c) =>
+        //Reduce in-degree of all vertices pointed to by this vertex
+        val dg2 = graph(c).foldLeft(degGraph){case (dg,c2) => dg.updatedWith(c2){case Some(i) => Some(i-1)}}
+        //Enqueue all we are pointing to that now have in-degree 0
+        val q2 = q.enqAll(graph(c).filter(c2 => dg2(c2) == 0))
+        destroyAndDrop(q2, dropped + 1, graph, dg2)
+    }
+  }
+
   override def solvePart1(inp: List[String]): Any = {
-    val init = inp.map(parseCuboid).sortBy(_.z.start) //sort them by starting z-coordinate
+    val init = inp.map(parseCuboid).sortBy(_.z.start) //sort them by starting z-coordinate to easily drop
     val settled = init.foldLeft(List.empty[Cuboid])(moveDown)
     val cannotBeDestroyed = settled.foldLeft(Set.empty[Cuboid]){case (set, c) =>
       val supports = settled.filter(c2 => c2.intersects(c.layerBelow))
@@ -41,74 +96,17 @@ class Day22 extends Solution {
       }
     }
     settled.size - cannotBeDestroyed.size
-
   }
 
-  //Find the set of all bricks above any other brick
-  def findBricksAbove(c: Cuboid, memo: Map[Cuboid, Set[Cuboid]], cuboids: List[Cuboid]): Map[Cuboid, Set[Cuboid]] = {
-    if (memo.contains(c)) { //Already processed, don't parse again
-      memo
-    } else {
-      //if all supports have been removed: Return removal-count
-      //if all supports have not been removed: Return 0
-      //Process graph to get memo, then use memo afterwards
-      val supporting = cuboids.filter(c2 => c2.intersects(c.layerAbove)).toSet
-      //Process all nodes above
-      val memo2 = supporting.foldLeft(memo){case (m,c) => findBricksAbove(c, m, cuboids)}
-      val memo3 = memo2.updated(c, supporting.union(supporting.flatMap(s => memo2(s))))
-      memo3
-    }
-  }
-
-  //Use some kind of memo as well?
-  @tailrec
-  final def findNumBricksDropped(queue: Queue[Cuboid], dropped: Set[Cuboid], cuboids: List[Cuboid]): Int = {
-    val (c,q) = queue.deq()
-    c match {
-      case None => dropped.size - 1 //Subtracting 1 to not drop the original brick we destroyed
-      case Some(c) =>
-        val supportedBy = cuboids.filter(c2 => c2.intersects(c.layerBelow)).toSet
-        if (supportedBy.diff(dropped).isEmpty) { //All supports have been removed, this one will drop as well
-          val supporting = cuboids.filter(c2 => c2.intersects(c.layerAbove))
-          val q2 = q.enqAll(supporting)
-          findNumBricksDropped(q2, dropped.incl(c), cuboids)
-        } else { //Not all supports have dropped. Empty queue before returning
-          findNumBricksDropped(q, dropped, cuboids)
-        }
-    }
-  }
 
   override def solvePart2(inp: List[String]): Any = {
     val init = inp.map(parseCuboid).sortBy(_.z.start) //sort them by starting z-coordinate
-    val settled = init.foldLeft(List.empty[Cuboid])(moveDown)
-    val bc = settled.foldLeft(Map.empty[Cuboid,Set[Cuboid]]){case (m,c) => findBricksAbove(c, m, settled)}
+    val settled = init.foldLeft(List.empty[Cuboid])(moveDown) //drop down
+    val graph = createGraph(settled, settled, Map.empty) //create graph
+    val degGraph = createDegGraph(graph) //create in-degree graph
 
-    val loneSupports = settled.foldLeft(Set.empty[Cuboid]){ case (s, c) =>
-      val supportedBy = settled.filter(c2 => c2.intersects(c.layerBelow)).toSet
-      if (supportedBy.size == 1) {
-        s.union(supportedBy)
-      } else {
-        s
-      }
-    }
-
-    val droppedByLoneSupports = loneSupports.map{ls =>
-      val supporting = settled.filter(c2 => c2.intersects(ls.layerAbove))
-      val q = Queue(supporting.head).enqAll(supporting.tail)
-      val dropped = Set(ls)
-      findNumBricksDropped(q, dropped, settled)
-    }
-
-    val bot = settled.filter(_.z.start == 1)
-    loneSupports.foreach{b =>
-      println(s"lone support $b, supporting ${bc(b).size} nodes")
-    }
-    println(loneSupports.map(b => bc(b).size).sum)
-    droppedByLoneSupports.sum
-
-//    loneSupports.map(ls => bc(ls).size).sum
-
-    //1167 is too low, 89024 is too high, 65941 is not correct either
+    //For each cuboid, sum up the number of other cuboids that will be dropped if it is destroyed
+    settled.map(s => destroyAndDrop(Queue(s),0, graph, degGraph)).sum
   }
 }
 
