@@ -91,7 +91,7 @@ package object common {
       Queue(item::enqueue, dequeue)
     }
 
-    def enqAll(items: List[T]): Queue[T] = {
+    def enqAll(items: Iterable[T]): Queue[T] = {
       items.foldLeft(this){case (q,i) => q.enq(i)}
     }
 
